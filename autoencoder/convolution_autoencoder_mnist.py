@@ -37,6 +37,8 @@ x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
 encoded = MaxPooling2D((2, 2), padding='same')(x)
 
 # at this point the representation is (4, 4, 8) i.e. 128-dimensional
+# this model maps an input to its encoded representation
+encoder = Model(input_img, encoded)
 
 x = Conv2D(8, (3, 3), activation='relu', padding='same')(encoded)
 x = UpSampling2D((2, 2))(x)
@@ -59,22 +61,32 @@ autoencoder.fit(x_train, x_train,
                 validation_data=(x_test, x_test),
                 callbacks=[TensorBoard(log_dir='/tmp/autoencoder')])
 
+encoded_imgs = encoder.predict(x_test)
 decoded_imgs = autoencoder.predict(x_test)
 
 n = 10  # how many digits we will display
 plt.figure(figsize=(20, 4))
+plt.title("Plot 2")
 for i in range(n):
     # display original
-    ax = plt.subplot(2, n, i + 1)
+    ax = plt.subplot(3, n, i + 1)
     plt.imshow(x_test[i].reshape(28, 28))
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 
+    # display encoded
+    ax = plt.subplot(3, n, i + 1 + n)
+    plt.imshow(encoded_imgs[i].reshape(8, 16))
+    plt.gray()
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+
     # display reconstruction
-    ax = plt.subplot(2, n, i + 1 + n)
+    ax = plt.subplot(3, n, i + 1 + 2*n)
     plt.imshow(decoded_imgs[i].reshape(28, 28))
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
+
 plt.show()

@@ -1,6 +1,7 @@
 from keras.layers import Input, Dense
 from keras.models import Model
 from keras.datasets import mnist
+from keras.callbacks import TensorBoard
 import matplotlib.pyplot as plt
 import numpy as np
 import os, sys
@@ -26,7 +27,7 @@ Autoencoders are not a true unsupervised learning technique, they are a self-sup
 a specific instance of supervised learning where the targets are generated from the input data.
 """
 
-#  We're using MNIST digits, and
+# We're using MNIST digits, and
 # we're discarding the labels (since we're only interested in encoding/decoding the input images)
 (x_train, _), (x_test, _) = mnist.load_data()
 
@@ -76,35 +77,66 @@ autoencoder.fit(x_train, x_train,
                 epochs=50,
                 batch_size=256,
                 shuffle=True,
-                validation_data=(x_test, x_test))
-
+                validation_data=(x_test, x_test),
+                callbacks=[TensorBoard(log_dir='/tmp/autoencoder')])
 
 # encode and decode some digits
 # note that we take them from the *test* set
 encoded_imgs = encoder.predict(x_test)
 decoded_imgs = decoder.predict(encoded_imgs)
 
+"""
+Visualization:
+https://matplotlib.org/api/pyplot_api.html
+"""
+
 n = 10  # how many digits we will display
+# plt.figure(figsize=(20, 4))
+# plt.title("Plot 1")
+# for i in range(n):
+#     # display original
+#     ax = plt.subplot(2, n, i + 1)
+#     plt.imshow(x_test[i].reshape(28, 28))
+#     plt.gray()
+#     ax.get_xaxis().set_visible(False)
+#     ax.get_yaxis().set_visible(False)
+#
+#     # # display encoded
+#     # ax = plt.subplot(2, n, i + 1 + n)
+#     # plt.imshow(encoded_imgs[i].reshape(8, 8))
+#     # plt.gray()
+#     # ax.get_xaxis().set_visible(False)
+#     # ax.get_yaxis().set_visible(False)
+#
+#     # display reconstruction
+#     ax = plt.subplot(2, n, i + 1 + n)
+#     plt.imshow(decoded_imgs[i].reshape(28, 28))
+#     plt.gray()
+#     ax.get_xaxis().set_visible(False)
+#     ax.get_yaxis().set_visible(False)
+
 plt.figure(figsize=(20, 4))
+plt.title("Plot 2")
 for i in range(n):
     # display original
-    ax = plt.subplot(2, n, i + 1)
+    ax = plt.subplot(3, n, i + 1)
     plt.imshow(x_test[i].reshape(28, 28))
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 
-    # # display encoded
-    # ax = plt.subplot(2, n, i + 1 + n)
-    # plt.imshow(encoded_imgs[i].reshape(8, 8))
-    # plt.gray()
-    # ax.get_xaxis().set_visible(False)
-    # ax.get_yaxis().set_visible(False)
+    # display encoded
+    ax = plt.subplot(3, n, i + 1 + n)
+    plt.imshow(encoded_imgs[i].reshape(8, 4))
+    plt.gray()
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
 
     # display reconstruction
-    ax = plt.subplot(2, n, i + 1 + n)
+    ax = plt.subplot(3, n, i + 1 + 2*n)
     plt.imshow(decoded_imgs[i].reshape(28, 28))
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
+
 plt.show()
