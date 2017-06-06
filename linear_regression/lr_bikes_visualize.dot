@@ -1,0 +1,16 @@
+digraph Tree {
+node [shape=box] ;
+0 [label="temperature <= 15.749\nmse = 91126.3606\nsamples = 350\nvalue = 502.62"] ;
+1 [label="temperature <= 7.7603\nmse = 29128.0212\nsamples = 146\nvalue = 224.0337"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="mse = 6010.9323\nsamples = 67\nvalue = 120.5734"] ;
+1 -> 2 ;
+3 [label="mse = 31956.3994\nsamples = 79\nvalue = 311.7785"] ;
+1 -> 3 ;
+4 [label="temperature <= 24.6484\nmse = 40200.5187\nsamples = 204\nvalue = 702.0004"] ;
+0 -> 4 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+5 [label="mse = 36755.8348\nsamples = 102\nvalue = 615.9371"] ;
+4 -> 5 ;
+6 [label="mse = 28831.4136\nsamples = 102\nvalue = 788.0637"] ;
+4 -> 6 ;
+}
