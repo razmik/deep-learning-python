@@ -7,6 +7,7 @@ from keras.datasets import cifar10 # subroutines for fetching the CIFAR-10 datas
 from keras.models import Model # basic class for specifying and training a neural network
 from keras.layers import Input, Convolution2D, MaxPooling2D, Dense, Dropout, Flatten
 from keras.utils import np_utils # utilities for one-hot encoding of ground truth values
+from keras.models import model_from_json
 import numpy as np
 
 """
@@ -79,3 +80,30 @@ model.fit(X_train, Y_train,                # Train the model using the training 
           batch_size=batch_size, epochs=num_epochs,
           verbose=1, validation_split=0.1)  # ...holding out 10% of the data for validation
 model.evaluate(X_test, Y_test, verbose=1)   # Evaluate the trained model on the test set!
+
+# serialize model to JSON
+model_json = model.to_json()
+with open("cnn_cifar10_model.json", "w") as json_file:
+    json_file.write(model_json)
+# serialize weights to HDF5
+model.save_weights("cnn_cifar10_model.h5")
+print("Saved model to disk")
+
+# later...
+
+# load json and create model
+json_file = open('cnn_cifar10_model.json', 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+loaded_model = model_from_json(loaded_model_json)
+# load weights into new model
+loaded_model.load_weights("cnn_cifar10_model.h5")
+print("Loaded model from disk")
+
+# evaluate loaded model on test data
+loaded_model.compile(loss='categorical_crossentropy',  # using the cross-entropy loss function
+              optimizer='adam',  # using the Adam optimiser
+              metrics=['accuracy'])  # reporting the accuracy
+score = loaded_model.evaluate(X_test, Y_test, verbose=1)
+
+print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1] * 100))
