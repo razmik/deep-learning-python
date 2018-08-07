@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn import linear_model
 from sklearn.tree import DecisionTreeRegressor, export_graphviz
-from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_absolute_error, r2_score, confusion_matrix
 import matplotlib.pyplot as plt
 import scipy.stats as stats
 import sys
@@ -69,6 +69,7 @@ sklearn_mse_LR = mean_absolute_error(y_test, bikes_reg.predict(x_test))
 print("LinearRegression sklearn MSE: %.2f " % sklearn_mse_LR)
 # Explained variance score: 1 is perfect prediction
 print('LinearRegression R-squared: %.2f' % bikes_reg.score(x_test, y_test))
+# print('LinearRegression R-squared NEW: %.2f' % r2_score(y_test, bikes_reg.predict(x_test)))
 
 # visualize
 plt.scatter(x_values, y_values,  color='black')
